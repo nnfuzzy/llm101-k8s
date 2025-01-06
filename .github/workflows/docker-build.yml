@@ -1,0 +1,54 @@
+name: Docker Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  REPOSITORY_NAME: "llm101-repo"
+  REGISTRY_REGION: "europe-west3-docker.pkg.dev"
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+
+jobs:
+  build:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    strategy:
+      matrix:
+        app:
+          - name: app-landing-page
+            path: app_landing_page
+          - name: app101
+            path: app101
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up GCP Authentication
+        env:
+          GCP_KEY: ${{ secrets.GCP_KEY }}
+        run: |
+          echo "$GCP_KEY" | base64 -d > key.json
+          gcloud auth activate-service-account --key-file=key.json
+          gcloud config set project $PROJECT_ID
+          gcloud auth configure-docker $REGISTRY_REGION -q
+
+      - name: Build Docker Image
+        run: |
+          IMAGE="${{ env.REGISTRY_REGION }}/${{ env.PROJECT_ID }}/${{ env.REPOSITORY_NAME }}/${{ matrix.app.name }}:${{ github.sha }}"
+          docker build --no-cache -t "$IMAGE" "${{ matrix.app.path }}"
+          docker tag "$IMAGE" "${{ env.REGISTRY_REGION }}/${{ env.PROJECT_ID }}/${{ env.REPOSITORY_NAME }}/${{ matrix.app.name }}:latest"
+
+      - name: Push Docker Images
+        run: |
+          IMAGE="${{ env.REGISTRY_REGION }}/${{ env.PROJECT_ID }}/${{ env.REPOSITORY_NAME }}/${{ matrix.app.name }}:${{ github.sha }}"
+          docker push "$IMAGE"
+          docker push "${{ env.REGISTRY_REGION }}/${{ env.PROJECT_ID }}/${{ env.REPOSITORY_NAME }}/${{ matrix.app.name }}:latest"

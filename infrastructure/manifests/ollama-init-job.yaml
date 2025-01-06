@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ollama-init-job
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: post-install
+        image: curlimages/curl:latest # Lightweight curl image
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo "Waiting for the service to become available...";
+            while ! nc -z ollama-service 11434; do sleep 1; done;
+            echo "Service is available, sending requests...";
+            curl http://ollama-service:11434/api/pull -d '{"model": "llama3.2:1b"}'
+            curl http://ollama-service:11434/api/pull -d '{"model": "llama3.2:3b"}'
+            echo "Requests completed.";
+      restartPolicy: Never
+  backoffLimit: 4

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: landing-page-deployment
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: landing-page
+  template:
+    metadata:
+      labels:
+        app: landing-page
+    spec:
+      containers:
+      - name: landing-page
+        image: europe-west3-docker.pkg.dev/smart-bonus-183707/llm101-repo/app-landing-page:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: landing-page-settings-volume
+          mountPath: /usr/src/app/.env
+          subPath: .env
+      volumes:
+        - name: landing-page-settings-volume
+          configMap:
+            name: general-configmap
+      imagePullSecrets:
+      - name: gcr-json-key
+        
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: landing-page-service
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  selector:
+    app: landing-page
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

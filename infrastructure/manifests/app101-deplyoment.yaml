@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app101-deployment
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app101
+  template:
+    metadata:
+      labels:
+        app: app101
+    spec:
+      containers:
+      - name: app101
+        image: europe-west3-docker.pkg.dev/smart-bonus-183707/llm101-repo/app101:latest
+        imagePullPolicy: Always
+        
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: app101-settings-volume
+          mountPath: /usr/src/app/.env
+          subPath: .env
+      volumes:
+        - name: app101-settings-volume
+          configMap:
+            name: general-configmap
+      imagePullSecrets:
+      - name: gcr-json-key # This is the secret to pull the images from a protected registry
+        
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app101-service
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  selector:
+    app: app101
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
