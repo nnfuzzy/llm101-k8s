@@ -373,5 +373,5 @@ spec:
             curl http://ollama-service:11434/api/pull -d '{"model": "llama3.2:3b"}'
             echo "Requests completed.";
       restartPolicy: Never
-  backoffLimit: 4The ollama-service has no models from the start, but with a job manifest it'll be handled automatically when the service is ready.
+  backoffLimit: 4
   ```
