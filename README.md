@@ -93,7 +93,7 @@ So you can start with the manifests immediately.
 2. Start microk8s
    ```bash
    microk8s start && microk8s status
-   ```![Alt text](assets/final_argocd.png)
+   ```
 
 3. Enable essential add-ons (enable one at a time is best practice):
    You might need to use sudo.
@@ -353,7 +353,7 @@ If everything works out, it looks like the picture at the top.
 
 ## 9. Ollama
 
-For ollama we have also a deployment, service and hpa for simplicity together in one file.
+For ollama we have also a deployment, service and hpa for simplicity together in one file (see: [ollama-deployment.yaml](https://github.com/nnfuzzy/llm101-k8s/blob/main/infrastructure/manifests/ollama-deployment.yaml)).
 
 
 Works without issues with a nvida gpu (microk8s enable nvidia)
