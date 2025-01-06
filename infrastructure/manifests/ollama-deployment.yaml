@@ -101,7 +101,7 @@ spec:
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
-metadata:
+metadata:```![Alt text](assets/final_argocd.png)
   name: hpa-ollama
   namespace: default
   annotations:

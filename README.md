@@ -23,7 +23,6 @@ on a dedicated machine tailored for **proof-of-concept (PoC)** projects. The set
     - [C. Early Detection of Roadblocks](#c-early-detection-of-roadblocks)
     - [D. Flexibility with Frameworks and Languages](#d-flexibility-with-frameworks-and-languages)
     - [E. Showcasing Versatility](#e-showcasing-versatility)
-  - [1. Prerequisites](#1-prerequisites)
   - [2. Setting Up the Kubernetes Cluster](#2-setting-up-the-kubernetes-cluster)
     - [On MicroK8s](#on-microk8s)
   - [3. Deploying the Ingress Controller](#3-deploying-the-ingress-controller)
@@ -64,18 +63,6 @@ With multi-domain ingress and containerized deployments, you can run multiple in
    - APIs or backend services written in Python, Node.js, or Go
 This makes the setup ideal for teams working on diverse projects.
 
-
-
-## 1. Prerequisites
-
-Before starting, ensure you have the following:
-
-- A Kubernetes cluster set up on either MicroK8s or GCP.
-- Kubectl installed and configured to interact with your cluster.
-- Administrative access to the cluster.
-- Some experience with docker & k8s (kubectl) will help.
-
----
 
 ## 2. Setting Up the Kubernetes Cluster
 
